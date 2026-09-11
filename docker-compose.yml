@@ -1,0 +1,15 @@
+services:
+  pgsql-api-agendamento:
+    image: postgres:alpine
+    ports:
+      - "5456:5432"
+    container_name: "pgsql-api-agendamento"
+    restart: always
+    volumes:
+      - data-api-agendamento:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-api_agendamento_db}
+      POSTGRES_USER: ${POSTGRES_USER:?Erro: Você esquecer de definir o POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Erro: Você esqueceu de definir o POSTGRES_PASSWORD no .env}
+volumes:
+  data-api-agendamento:
