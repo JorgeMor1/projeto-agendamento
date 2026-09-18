@@ -15,14 +15,14 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private String sobreNnome;
+    private String sobrenome;
     private String email;
     @JsonbTransient
     private String senha;
 
     public Usuario(String nome, String sobreNnome, String email, String senha) {
         this.nome = nome;
-        this.sobreNnome = sobreNnome;
+        this.sobrenome = sobreNnome;
         this.email = email;
         this.senha = senha;
     }
@@ -35,12 +35,12 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public String getSobreNnome() {
-        return sobreNnome;
+    public String getSobrenome() {
+        return sobrenome;
     }
 
-    public void setSobreNnome(String sobreNnome) {
-        this.sobreNnome = sobreNnome;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public String getEmail() {
