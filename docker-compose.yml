@@ -6,7 +6,7 @@ services:
     container_name: "pgsql-api-agendamento"
     restart: always
     volumes:
-      - data-api-agendamento:/var/lib/postgresql/data
+      - data-api-agendamento:/var/lib/postgresql
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-api_agendamento_db}
       POSTGRES_USER: ${POSTGRES_USER}
