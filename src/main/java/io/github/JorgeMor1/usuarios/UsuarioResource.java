@@ -28,7 +28,6 @@ public class UsuarioResource {
         user.setSobrenome(dto.getSobrenome());
         user.setEmail(dto.getEmail());
         user.setSenha(dto.getSenha());
-        user.setRole(dto.getRole());
         userRepository.persist(user);
         return Response.status(Response.Status.CREATED).build();
 
