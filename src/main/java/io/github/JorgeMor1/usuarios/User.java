@@ -1,30 +1,35 @@
 package io.github.JorgeMor1.usuarios;
 
-import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 
 @Getter
-@Setter
-public class Usuario {
+@Entity
+@Table(name = "usuario")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String sobrenome;
     private String email;
-    @JsonbTransient
     private String senha;
+    private String role;
 
-    public Usuario(String nome, String sobreNnome, String email, String senha) {
+    public User() {
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public User(String nome, String sobreNnome, String email, String senha, String role) {
         this.nome = nome;
         this.sobrenome = sobreNnome;
         this.email = email;
         this.senha = senha;
+        this.role = role;
     }
 
     public String getNome() {
