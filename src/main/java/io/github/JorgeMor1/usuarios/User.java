@@ -1,62 +1,93 @@
 package io.github.JorgeMor1.usuarios;
 
+import io.github.JorgeMor1.usuarios.enums.UserRole;
+import io.github.JorgeMor1.usuarios.enums.UserStatus;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.time.Instant;
+import java.util.UUID;
 
 
 @Getter
 @Entity
-@Table(name = "usuario")
-public class User {
+@Table(name = "users")
+public class User extends PanacheEntityBase {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nome;
-    private String sobrenome;
+    @GeneratedValue
+    @UuidGenerator
+    public UUID id;
+
+    @Column(name = "first_name", nullable = false, length = 150)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 150)
+    private String lastName;
+
+    @Column(name = "email", unique = true, nullable = false, length = 250)
     private String email;
-    private String senha;
-    private String role;
 
-    public User() {
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 30)
+    private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private UserStatus userStatus;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    void onCreate(){
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+        if (this.userStatus == null) this.userStatus = UserStatus.ACTIVE;
+        if(this.role == null) this.role = UserRole.USER;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    @PreUpdate
+    void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 
-    public User(String nome, String sobreNnome, String email, String senha, String role) {
-        this.nome = nome;
-        this.sobrenome = sobreNnome;
-        this.email = email;
-        this.senha = senha;
-        this.role = role;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSobrenome() {
-        return sobrenome;
-    }
-
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
-    }
-
-    public String getEmail() {
-        return email;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
