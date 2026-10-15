@@ -1,7 +1,9 @@
 package io.github.JorgeMor1.auth;
 
-import io.github.JorgeMor1.auth.dto.RegisterRequest;
-import io.github.JorgeMor1.auth.dto.RegisterResponse;
+import io.github.JorgeMor1.auth.dto.request.RegisterRequest;
+import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
+import io.github.JorgeMor1.auth.dto.response.TokenResponse;
+import io.github.JorgeMor1.auth.dto.response.UserSummaryDTO;
 import io.github.JorgeMor1.usuarios.User;
 import io.github.JorgeMor1.usuarios.UserRepository;
 import io.github.JorgeMor1.usuarios.enums.UserRole;
@@ -47,16 +49,24 @@ public class AuthService {
 
         TokenResult tokens = tokenService.generateAccessToken( user );
 
-        return new RegisterResponse(
+        TokenResponse tokenResponse = new TokenResponse(
+                tokens.accessToken(),
+                tokens.expiresAt(),
+                "Bearer"
+        );
+
+        UserSummaryDTO userSummary = new UserSummaryDTO(
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole(),
                 user.getUserStatus(),
-                user.getCreatedAt(),
-                tokens.getAccessToken(),
-                tokens.getExpiresAt(),
-                "Bearer"
+                user.getCreatedAt()
+        );
+
+        return new RegisterResponse(
+                userSummary,
+                tokenResponse
         );
     }
 }

@@ -1,9 +1,7 @@
 package io.github.JorgeMor1.auth;
 
-import io.github.JorgeMor1.auth.dto.LoginRequest;
-import io.github.JorgeMor1.auth.dto.LoginResponse;
-import io.github.JorgeMor1.auth.dto.RegisterRequest;
-import io.github.JorgeMor1.auth.dto.RegisterResponse;
+import io.github.JorgeMor1.auth.dto.request.RegisterRequest;
+import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
