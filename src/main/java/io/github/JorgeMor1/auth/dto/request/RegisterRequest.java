@@ -1,4 +1,4 @@
-package io.github.JorgeMor1.auth.dto;
+package io.github.JorgeMor1.auth.dto.request;
 
 
 import jakarta.validation.constraints.Email;
