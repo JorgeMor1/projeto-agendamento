@@ -1,9 +1,12 @@
 package io.github.JorgeMor1.auth;
 
+import io.github.JorgeMor1.auth.dto.request.LoginRequest;
 import io.github.JorgeMor1.auth.dto.request.RegisterRequest;
+import io.github.JorgeMor1.auth.dto.response.LoginResponse;
 import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -31,10 +34,11 @@ public class AuthResource {
                 .build();
     }
 
-    /*@POST
+    @POST
     @Path("/login")
     @PermitAll
-    public LoginResponse login(LoginRequest request) {
-        return authService.login(request);
-    }*/
+    public Response login(@Valid LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return Response.ok(response).build();
+    }
 }
