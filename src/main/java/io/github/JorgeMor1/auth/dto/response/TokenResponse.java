@@ -6,5 +6,4 @@ public record TokenResponse(
         String accessToken,
         Instant expiresAt,
         String tokenType
-) {
-}
+) {}

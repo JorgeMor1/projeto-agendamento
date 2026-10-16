@@ -25,20 +25,20 @@ public class AuthResource {
     @POST
     @Path("/register")
     @PermitAll
-    public Response register(RegisterRequest request){
-        RegisterResponse response = authService.register(request);
+    public Response register( RegisterRequest request ){
+        RegisterResponse response = authService.register( request );
 
         return Response
-                .status(Response.Status.CREATED)
-                .entity(response)
+                .status( Response.Status.CREATED )
+                .entity( response )
                 .build();
     }
 
     @POST
     @Path("/login")
     @PermitAll
-    public Response login(@Valid LoginRequest request) {
-        LoginResponse response = authService.login(request);
-        return Response.ok(response).build();
+    public Response login( @Valid LoginRequest request ) {
+        LoginResponse response = authService.login( request );
+        return Response.ok( response ).build();
     }
 }

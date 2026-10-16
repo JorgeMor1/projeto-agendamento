@@ -29,29 +29,29 @@ public class User extends PanacheEntityBase {
     @Column(name = "email", unique = true, nullable = false, length = 250)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column( name = "password_hash", nullable = false )
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 30)
+    @Enumerated( EnumType.STRING )
+    @Column( name = "role", nullable = false, length = 30 )
     private UserRole role;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)
+    @Enumerated( EnumType.STRING )
+    @Column( name = "status", nullable = false, length = 20 )
     private UserStatus userStatus;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column( name = "created_at", nullable = false, updatable = false )
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column( name = "updated_at", nullable = false )
     private Instant updatedAt;
 
     @PrePersist
     void onCreate(){
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
-        if (this.userStatus == null) this.userStatus = UserStatus.ACTIVE;
-        if(this.role == null) this.role = UserRole.USER;
+        if ( this.userStatus == null ) this.userStatus = UserStatus.ACTIVE;
+        if( this.role == null ) this.role = UserRole.USER;
     }
 
     @PreUpdate
@@ -59,35 +59,35 @@ public class User extends PanacheEntityBase {
         this.updatedAt = Instant.now();
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName( String firstName ) {
         this.firstName = firstName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName( String lastName ) {
         this.lastName = lastName;
     }
 
-    public void setEmail(String email) {
+    public void setEmail( String email ) {
         this.email = email;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    public void setPasswordHash( String passwordHash ) {
         this.passwordHash = passwordHash;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole( UserRole role ) {
         this.role = role;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
+    public void setUserStatus( UserStatus userStatus ) {
         this.userStatus = userStatus;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt( Instant createdAt ) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
+    public void setUpdatedAt( Instant updatedAt ) {
         this.updatedAt = updatedAt;
     }
 }

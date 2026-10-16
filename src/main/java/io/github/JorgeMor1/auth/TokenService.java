@@ -20,24 +20,24 @@ public class TokenService {
     public TokenResult  generateAccessToken( User user ) {
 
         Instant now = Instant.now();
-        Instant expiresAt = now.plus(ACCESS_TOKEN_DURATION);
+        Instant expiresAt = now.plus( ACCESS_TOKEN_DURATION );
 
         if ( user.getRole() == null ){
-            throw new IllegalStateException("Não é possível gerar um token para um usuário sem papel.");
+            throw new IllegalStateException( "Não é possível gerar um token para um usuário sem papel." );
         }
 
-        Set<String> roles = new HashSet<>();
-        roles.add(user.getRole().getName());
+        Set< String > roles = new HashSet<>();
+        roles.add( user.getRole().getName() );
 
         String accessToken = Jwt
-                .issuer(ISSUER)
-                .audience(AUDIENCE)
-                .subject(user.getEmail())
-                .groups(roles)
-                .claim("userId", user.getId().toString())
-                .claim(Claims.jti.name(), UUID.randomUUID().toString())
-                .issuedAt(now)
-                .expiresAt(expiresAt)
+                .issuer( ISSUER )
+                .audience( AUDIENCE )
+                .subject( user.getEmail() )
+                .groups( roles )
+                .claim( "userId", user.getId().toString() )
+                .claim( Claims.jti.name(), UUID.randomUUID().toString() )
+                .issuedAt( now )
+                .expiresAt( expiresAt )
                 .sign();
         return new TokenResult( accessToken, expiresAt );
     }

@@ -35,8 +35,8 @@ public class AuthService {
         User user = new User();
         user.setFirstName( request.firstName() );
         user.setLastName( request.lastName() );
-        user.setEmail( request.email( ));
-        user.setPasswordHash(BcryptUtil.bcryptHash(request.password()));
+        user.setEmail( request.email( ) );
+        user.setPasswordHash( BcryptUtil.bcryptHash(request.password() ) );
         user.setRole( UserRole.USER );
         user.setUserStatus( UserStatus.ACTIVE );
 
@@ -48,7 +48,7 @@ public class AuthService {
     @Transactional
     public LoginResponse login( LoginRequest request ) {
         User user = userRepository.findByEmail( request.email() )
-                .orElseThrow(() -> new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED ) );
+                .orElseThrow( () -> new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED ) );
 
         if ( !BcryptUtil.matches( request.password(), user.getPasswordHash() ) ) {
             throw new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED );
@@ -58,7 +58,7 @@ public class AuthService {
             throw new WebApplicationException( "Usuário inativo ou bloqueado", Response.Status.FORBIDDEN );
         }
 
-        return criarLoginResponse(user);
+        return criarLoginResponse( user );
     }
 
     private UserSummaryDTO mapearParaSummary ( User user ) {
