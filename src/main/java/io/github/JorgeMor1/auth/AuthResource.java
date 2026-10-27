@@ -25,7 +25,7 @@ public class AuthResource {
     @POST
     @Path("/register")
     @PermitAll
-    public Response register( RegisterRequest request ){
+    public Response register( @Valid RegisterRequest request ){
         RegisterResponse response = authService.register( request );
 
         return Response
