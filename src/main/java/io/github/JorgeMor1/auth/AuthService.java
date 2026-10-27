@@ -82,8 +82,7 @@ public class AuthService {
     }
     private RegisterResponse criarRegisterResponse( User user ) {
         return new RegisterResponse(
-                mapearParaSummary( user ),
-                gerarTokenResponse( user )
+                mapearParaSummary( user )
         );
     }
 
