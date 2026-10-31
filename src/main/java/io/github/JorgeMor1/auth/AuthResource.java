@@ -1,9 +1,11 @@
 package io.github.JorgeMor1.auth;
 
 import io.github.JorgeMor1.auth.dto.request.LoginRequest;
+import io.github.JorgeMor1.auth.dto.request.RefreshTokenRequest;
 import io.github.JorgeMor1.auth.dto.request.RegisterRequest;
 import io.github.JorgeMor1.auth.dto.response.LoginResponse;
 import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
+import io.github.JorgeMor1.auth.dto.response.TokenResponse;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -40,5 +42,12 @@ public class AuthResource {
     public Response login( @Valid LoginRequest request ) {
         LoginResponse response = authService.login( request );
         return Response.ok( response ).build();
+    }
+
+    @POST
+    @Path("/refresh")
+    public Response refresh( @Valid RefreshTokenRequest request ) {
+        TokenResponse tokens = authService.refreshTokens( request.refreshToken() );
+        return Response.ok( tokens ).build();
     }
 }
