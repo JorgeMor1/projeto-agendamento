@@ -5,5 +5,4 @@ import java.time.Instant;
 public record TokenResult (
     String accessToken,
     Instant expiresAt
-    //private final String refreshToken
 ) {}
