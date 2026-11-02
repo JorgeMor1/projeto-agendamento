@@ -36,6 +36,8 @@ public class AuthService {
 
     @Inject
     RefreshTokenRepository refreshTokenRepository;
+    @Inject
+    LoginAttemptService loginAttemptService;
 
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7);
 
@@ -60,17 +62,34 @@ public class AuthService {
 
     @Transactional
     public LoginResponse login( LoginRequest request ) {
+        String email = request.email();
+
+        if ( loginAttemptService.isBlocked( email ) ) {
+            throw new WebApplicationException( "Muitas tentativas inválidas. Tente novamente mais tarde.",
+                    Response.Status.UNAUTHORIZED );
+        }
+
         User user = userRepository.findByEmail( request.email() )
-                .orElseThrow( () -> new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED ) );
+                .orElse( null );
+
+        if ( user == null ) {
+            loginAttemptService.addFailure( email );
+            throw new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED );
+        }
+
 
         if ( !BcryptUtil.matches( request.password(), user.getPasswordHash() ) ) {
+            loginAttemptService.addFailure(email);
             throw new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED );
         }
 
         if ( user.getUserStatus() != UserStatus.ACTIVE ) {
             throw new WebApplicationException( "Usuário inativo ou bloqueado", Response.Status.FORBIDDEN );
         }
-        refreshTokenRepository.deleteExpiredTokensForUser(user);
+
+        loginAttemptService.resetAttempts( email );
+
+        refreshTokenRepository.deleteExpiredTokensForUser( user );
         return criarLoginResponse( user );
     }
 
