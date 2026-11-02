@@ -6,6 +6,8 @@ import io.github.JorgeMor1.auth.dto.request.RegisterRequest;
 import io.github.JorgeMor1.auth.dto.response.LoginResponse;
 import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
 import io.github.JorgeMor1.auth.dto.response.TokenResponse;
+import io.quarkiverse.bucket4j.runtime.RateLimited;
+import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -39,6 +41,7 @@ public class AuthResource {
     @POST
     @Path("/login")
     @PermitAll
+    @RateLimited( bucket = "login-ip-limiter", identityResolver = IpResolver.class )
     public Response login( @Valid LoginRequest request ) {
         LoginResponse response = authService.login( request );
         return Response.ok( response ).build();
