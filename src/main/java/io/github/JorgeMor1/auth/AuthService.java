@@ -6,6 +6,7 @@ import io.github.JorgeMor1.auth.dto.response.LoginResponse;
 import io.github.JorgeMor1.auth.dto.response.RegisterResponse;
 import io.github.JorgeMor1.auth.dto.response.TokenResponse;
 import io.github.JorgeMor1.auth.dto.response.UserSummaryDTO;
+import io.github.JorgeMor1.auth.logging.SecureAuthLoggingService;
 import io.github.JorgeMor1.auth.repository.RefreshTokenRepository;
 import io.github.JorgeMor1.usuarios.User;
 import io.github.JorgeMor1.usuarios.UserRepository;
@@ -36,8 +37,12 @@ public class AuthService {
 
     @Inject
     RefreshTokenRepository refreshTokenRepository;
+
     @Inject
     LoginAttemptService loginAttemptService;
+
+    @Inject
+    SecureAuthLoggingService authLoggingService;
 
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(7);
 
@@ -65,6 +70,7 @@ public class AuthService {
         String email = request.email();
 
         if ( loginAttemptService.isBlocked( email ) ) {
+            authLoggingService.logFailedLoginAttempt( email,  "IP_CLIENTE_OU_CONTEXTO"  );
             throw new WebApplicationException( "Muitas tentativas inválidas. Tente novamente mais tarde.",
                     Response.Status.UNAUTHORIZED );
         }
@@ -74,12 +80,14 @@ public class AuthService {
 
         if ( user == null ) {
             loginAttemptService.addFailure( email );
+            authLoggingService.logFailedLoginAttempt( email,  "IP_CLIENTE_OU_CONTEXTO"  );
             throw new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED );
         }
 
 
         if ( !BcryptUtil.matches( request.password(), user.getPasswordHash() ) ) {
             loginAttemptService.addFailure(email);
+            authLoggingService.logFailedLoginAttempt( email,  "IP_CLIENTE_OU_CONTEXTO"  );
             throw new WebApplicationException( "Credenciais inválidas", Response.Status.UNAUTHORIZED );
         }
 
@@ -90,6 +98,8 @@ public class AuthService {
         loginAttemptService.resetAttempts( email );
 
         refreshTokenRepository.deleteExpiredTokensForUser( user );
+
+        authLoggingService.logSuccessfulLogin( user.getId().toString(),  "IP_CLIENTE_OU_CONTEXTO"  );
         return criarLoginResponse( user );
     }
 
@@ -103,7 +113,16 @@ public class AuthService {
         RefreshTokenEntity existingToken = refreshTokenRepository.findByTokenHash( hashedToken )
                 .orElseThrow(() -> new WebApplicationException( "Refresh token inválido, expirado ou revogado.", Response.Status.UNAUTHORIZED ) );
 
-        if ( existingToken.isRevoked() || existingToken.getExpiresAt().isBefore( Instant.now() ) ) {
+        // 1. Verifica se o token já foi revogado
+        if ( existingToken.isRevoked() ) {
+            String userId = existingToken.getUser().getId().toString();
+            authLoggingService.logTokenReuseDetected( userId, "IP_CLIENTE_OU_CONTEXTO" );
+
+            throw new WebApplicationException( "Refresh token inválido, expirado ou revogado.", Response.Status.UNAUTHORIZED );
+        }
+
+        // 2. Verifica se o token expirou pelo tempo
+        if ( existingToken.getExpiresAt().isBefore( Instant.now() ) ) {
             throw new WebApplicationException( "Refresh token inválido, expirado ou revogado.", Response.Status.UNAUTHORIZED );
         }
 
