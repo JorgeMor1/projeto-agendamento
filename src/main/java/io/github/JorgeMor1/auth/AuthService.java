@@ -134,6 +134,21 @@ public class AuthService {
         return gerarTokenResponse( user );
     }
 
+    @Transactional
+    public void logout( String rawRefreshToken ) {
+        if ( rawRefreshToken == null || rawRefreshToken.isBlank() ) {
+            return;
+        }
+
+        String hashedToken = hashToken( rawRefreshToken );
+
+        // Se encontrar o token, marca como revogado
+        refreshTokenRepository.findByTokenHash( hashedToken ).ifPresent( entity -> {
+            entity.setRevoked( true );
+            refreshTokenRepository.persist( entity );
+        });
+    }
+
     private UserSummaryDTO mapearParaSummary ( User user ) {
         return new UserSummaryDTO(
                 user.getId(),
