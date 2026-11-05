@@ -18,6 +18,8 @@ public class RefreshTokenCleanupService {
     RefreshTokenRepository refreshTokenRepository;
 
     @Scheduled( cron = "0 0 3 * * ?" )
+    // Deixado o metodo comentado para realizar execucoes em 30 segundos para testes
+    // @Scheduled(every = "30s")
     @Transactional
     public void purgeExpiredOrRevokedTokens() {
         Log.info( "Iniciando a rotina de limpeza de Refresh Tokens expirados ou revogados..." );

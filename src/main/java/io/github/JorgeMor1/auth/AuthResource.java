@@ -53,4 +53,12 @@ public class AuthResource {
         TokenResponse tokens = authService.refreshTokens( request.refreshToken() );
         return Response.ok( tokens ).build();
     }
+
+    @POST
+    @Path("/logout")
+    @PermitAll
+    public Response logout(@Valid RefreshTokenRequest request) {
+        authService.logout(request.refreshToken());
+        return Response.noContent().build();
+    }
 }
